@@ -5,9 +5,8 @@ import cPickle as pickle
 from time import sleep
 
 # setup
-FBTOKEN = 'CAAGm0PX4ZCpsBALQiaLd8BLETTgBgxkFXQL5e4GjGW5oTvAB4X7w7XtMstKd2tA7pVvw9P8ZC267ZAuFMOaAHnMgsr85ZClvQRy2bTeQq9PeIMD22R1IW09pZBZAuMJWDj1d4sfSScfm4gKyAhweFewMVBLnNJp6dyZBydZAZAxoF60xPMB9xVIVczuY0D0sy9DStyg4rWqAKZBQZDZD'
-FBID = "100009935688279"
-continuar = True
+FBTOKEN = # para conseguir o token visite https://www.facebook.com/dialog/oauth?client_id=464891386855067&redirect_uri=https://www.facebook.com/connect/login_success.html&scope=basic_info,email,public_profile,user_about_me,user_activities,user_birthday,user_education_history,user_friends,user_interests,user_likes,user_location,user_photos,user_relationship_details&response_type=token 
+FBID = # ID do usuario do bot no Facebook
 session = pynder.Session(FBID, FBTOKEN)
 print 'Autorizado.'
 
@@ -35,7 +34,7 @@ def like_everyone():
         except: print 'something wrong'
     print 'Curti o pessoal'
 
-def check_messages():
+def check_messages(): # retornas as mensagens recebidas depois da ultima checagem
     global last_check
     print 'Checando mensagens'
     new_messages = []
@@ -53,7 +52,7 @@ def check_messages():
     pickle.dump(last_check, open('last_check.p', 'wb'))
     return new_messages
 
-def get_matches():
+def get_matches(): # As vezes a API dá uns problemas, por isso não uso session.matches() direto
     print 'Procurando matches...'
     matches = False
     while matches == False:
@@ -64,17 +63,17 @@ def get_matches():
     print 'Achei matches!'
     return matches
 
-def write(new):
+def write(new): # Manda as mensagens recebidas pros matches correspondentes
     print 'Escrevendo novas mensagens'
     for tupla in new:
         if tupla[1] == None: continue
         i = tupla[0] # match inicial
         c = (i/2)*2 + 1-(i % 2) # match correspondente
         new_messages = matches[i].messages[tupla[1]:]
-        pickle.dump(new_messages, open(str(matches[i])+str(matches[c]), 'wb'))
         for msg in new_messages:
             print 'opa'
             if msg.sender.name != 'Eva':
+                # antes tinha uma função de log aqui mas acabei tirando
                 print '\n\n'
                 msg = msg.body.encode('utf-8','replace')
                 msg = str(msg).replace('linda','lindo')
@@ -86,7 +85,7 @@ def write(new):
 
 matches = get_matches()
 print 'Iniciando.'
-while continuar:
+while True:
     print 'Loop!'
     if datetime.now().hour % 6 == 0: like_everyone()
     if datetime.now().minute % 10 == 0: matches = get_matches()
